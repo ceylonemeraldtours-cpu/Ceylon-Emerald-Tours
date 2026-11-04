@@ -38,7 +38,7 @@ function guestRows(g: { fullName: string; email: string; phone: string }): strin
 }
 
 /* ------------------------------------------------------------------ */
-/* Tour package booking                                                */
+/* Tour package booking                                              */
 /* ------------------------------------------------------------------ */
 
 export interface BookingEmailData {
@@ -61,7 +61,7 @@ function bookingRows(data: BookingEmailData): string[] {
     row("Duration", esc(target.duration)),
     row("Listed price", `From ${money(target.price)} per adult`),
     row("Preferred date", esc(prettyDate(guest.travelDate))),
-    row("Guests", String(guest.guests)),
+    row("Guests", String(guest.adults)),
     guest.pickupLocation ? row("Pickup location", esc(guest.pickupLocation)) : "",
   ];
 }
@@ -81,7 +81,7 @@ export function buildBookingEmails(data: BookingEmailData): MailPair {
        ${heading("Your request", 4)}
        ${table([
          ...bookingRows(data),
-         guest.specialRequests ? row("Special requests", multiline(guest.specialRequests)) : "",
+         guest.notes ? row("Special requests", multiline(guest.notes)) : "",
        ])}
        ${contactBlock(reference)}`
     ),
@@ -90,9 +90,9 @@ export function buildBookingEmails(data: BookingEmailData): MailPair {
       `Reference: ${reference}`,
       `Package: ${target.title} (${target.duration})`,
       `Preferred date: ${prettyDate(guest.travelDate)}`,
-      `Guests: ${guest.guests}`,
+      `Guests: ${guest.adults}`,
       guest.pickupLocation ? `Pickup location: ${guest.pickupLocation}` : "",
-      guest.specialRequests ? `Special requests: ${guest.specialRequests}` : "",
+      guest.notes ? `Special requests: ${guest.notes}` : "",
       "",
       `Our team will contact you soon to confirm availability, price and payment details. ${NOT_CHARGED}`,
       `Questions? WhatsApp ${SITE.phoneDisplay}, or email ${SITE.email}.`,
@@ -117,11 +117,12 @@ export function buildBookingEmails(data: BookingEmailData): MailPair {
        ${heading("Request")}
        ${table([
          ...bookingRows(data),
-         row("Special requests", guest.specialRequests ? multiline(guest.specialRequests) : "None"),
+         row("Special requests", guest.notes ? multiline(guest.notes) : "None"),
          row("Received", esc(submittedAt.toUTCString())),
        ])}
        <div style="margin-top:26px;">
-         ${button(wa, "Reply on WhatsApp", "gold")}${button(`mailto:${guest.email}?subject=${encodeURIComponent(`Your booking request ${reference}`)}`, "Reply by email", "green")}
+         ${button(wa, "Reply on WhatsApp", "gold")},
+         ${button(`mailto:${guest.email}?subject=${encodeURIComponent(`Your booking request ${reference}`)}`, "Reply by email", "green")}
        </div>
        <p style="margin:14px 0 0;font-size:12px;color:${C.muted};">The guest has been sent a confirmation email with this reference.</p>`
     ),
@@ -132,9 +133,9 @@ export function buildBookingEmails(data: BookingEmailData): MailPair {
       `Email: ${guest.email}`,
       `Phone: ${guest.phone}`,
       `Preferred date: ${prettyDate(guest.travelDate)}`,
-      `Guests: ${guest.guests}`,
+      `Guests: ${guest.adults}`,
       guest.pickupLocation ? `Pickup location: ${guest.pickupLocation}` : "",
-      `Special requests: ${guest.specialRequests || "None"}`,
+      `Special requests: ${guest.notes || "None"}`,
       `WhatsApp: ${wa}`,
     ]
       .filter((l) => l !== "")
@@ -145,7 +146,7 @@ export function buildBookingEmails(data: BookingEmailData): MailPair {
 }
 
 /* ------------------------------------------------------------------ */
-/* Airport transfer                                                    */
+/* Airport transfer                                                  */
 /* ------------------------------------------------------------------ */
 
 export interface TransferEmailData {
@@ -207,16 +208,18 @@ export function buildTransferEmails(data: TransferEmailData): MailPair {
     html: layout(
       `${t.fullName}: ${route} on ${t.date} at ${t.time}.`,
       "New airport transfer request",
-      `${referenceStrip(reference)}
-       ${heading("Guest", 0)}
-       ${guestRows(t)}
-       ${heading("Transfer")}
-       ${table([...transferRows(t), row("Received", esc(submittedAt.toUTCString()))])}
-       <div style="margin-top:26px;">
-         ${button(wa, "Reply on WhatsApp", "gold")}${button(`mailto:${t.email}?subject=${encodeURIComponent(`Your airport transfer ${reference}`)}`, "Reply by email", "green")}
+      referenceStrip(reference) +
+      heading("Guest", 0) +
+      guestRows(t) +
+      heading("Transfer") +
+      table([...transferRows(t), row("Received", esc(submittedAt.toUTCString()))]) +
+      `<div style="margin-top:26px;">
+         ${button(wa, "Reply on WhatsApp", "gold")}
+         ${button(`mailto:${t.email}?subject=${encodeURIComponent(`Your airport transfer ${reference}`)}`, "Reply by email", "green")}
        </div>
        <p style="margin:14px 0 0;font-size:12px;color:${C.muted};">The guest has been sent a confirmation email with this reference.</p>`
     ),
+    
     text: [
       `New airport transfer request ${reference}`,
       `Name: ${t.fullName}`,
@@ -318,7 +321,8 @@ export function buildCustomTourEmails(data: CustomTourEmailData): MailPair {
          row("Received", esc(submittedAt.toUTCString())),
        ])}
        <div style="margin-top:26px;">
-         ${button(wa, "Reply on WhatsApp", "gold")}${button(`mailto:${p.email}?subject=${encodeURIComponent(`Your custom tour ${reference}`)}`, "Reply by email", "green")}
+         ${button(wa, "Reply on WhatsApp", "gold")},
+         ${button(`mailto:${p.email}?subject=${encodeURIComponent(`Your custom tour ${reference}`)}`, "Reply by email", "green")}
        </div>
        <p style="margin:14px 0 0;font-size:12px;color:${C.muted};">The guest has been sent a confirmation email with this reference.</p>`
     ),

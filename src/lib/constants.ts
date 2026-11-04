@@ -9,8 +9,8 @@ export const SITE = {
 
 // TODO: replace with the exact profile URLs for each account.
 export const SOCIALS = {
-  tripadvisor: "https://www.tripadvisor.com/",
-  facebook: "https://www.facebook.com/",
+  tripadvisor: "https://www.tripadvisor.com//Attraction_Review-g1051532-d34741574-Reviews-Ceylon_Emerald_Tours-Bandarawela_Uva_Province.html",
+  facebook: "https://www.facebook.com/share/19757mZkbc/",
   instagram: "https://www.instagram.com/",
 } as const;
 
