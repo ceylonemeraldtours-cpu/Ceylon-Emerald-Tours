@@ -1,26 +1,98 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* keeps anchored sections clear of the fixed navbar */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  body {
+    @apply bg-ceylon-night font-sans text-white antialiased;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  ::selection {
+    background: #fbbf24;
+    color: #022c22;
+  }
+
+  :focus-visible {
+    outline: 2px solid #fbbf24;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Layout */
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+  .section-y {
+    @apply py-20 sm:py-28;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    @apply border border-white/15 bg-white/10 backdrop-blur-md;
+  }
+  .glass-dark {
+    @apply border border-white/10 bg-ceylon-night/60 backdrop-blur-md;
+  }
+
+  /* Subtle glowing hover for cards and tiles */
+  .glow-hover {
+    @apply transition duration-300 ease-out;
+  }
+  .glow-hover:hover {
+    border-color: rgba(251, 191, 36, 0.5);
+    box-shadow: 0 0 36px -6px rgba(251, 191, 36, 0.4);
+  }
+
+  /* Buttons */
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-ceylon-glow to-ceylon-gold px-7 py-3.5 text-sm font-semibold text-ceylon-night shadow-lg shadow-ceylon-gold/25 transition duration-300 ease-out;
+  }
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 36px -2px rgba(251, 191, 36, 0.6);
+  }
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition duration-300 ease-out;
+  }
+  .btn-glass:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(251, 191, 36, 0.6);
+  }
+
+  /* Text */
+  .text-gold-gradient {
+    @apply bg-gradient-to-r from-ceylon-glow to-ceylon-gold bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
